@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request, session, jsonify
 import time
 
 main = Blueprint('main', __name__)
@@ -9,8 +9,8 @@ def hello():
 
 @main.route('/')
 def home():
-    session['button_disabled'] = True  
-    return render_template("home.html", button_disabled=session['button_disabled'])
+    session['file_valid'] = False  
+    return render_template("home.html", file_valid=False)
 
 @main.route('/checkfile', methods=['POST'])
 def checkfile():
@@ -20,6 +20,11 @@ def checkfile():
 
     for audio_type in types:
         if audio_ext == audio_type:
-            session['button_disabled'] = False
-            return render_template('validate_results/valid.html')
-    return render_template('validate_results/invalid.html')
+            session['file_valid'] = True
+            return render_template('validate_results/valid.html', file_valid=True)
+    return render_template('validate_results/invalid.html', file_valid=False)
+
+@main.route('/spleet', methods=['POST'])
+def spleet():
+    print('reached here')
+    return "Hello"
