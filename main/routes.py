@@ -15,7 +15,6 @@ def home():
 @main.route('/checkfile', methods=['POST'])
 def checkfile():
     types = ['mp3', 'wav', 'flac', 'm4a']
-
     try:
         audio = request.files['audio']
     except Exception as err:
@@ -32,5 +31,7 @@ def checkfile():
 
 @main.route('/spleet', methods=['POST'])
 def spleet():
-    print('reached here')
+    audio = request.files['audio']
+    stem = request.form['stem']
+
     return "Hello"

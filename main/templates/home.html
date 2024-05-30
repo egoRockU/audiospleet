@@ -12,7 +12,7 @@
     <script src="{{ url_for('static', filename='lib/htmx.min.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/loading-states.js') }}"></script>
   </head>
-  <body>
+  <body hx-ext="loading-states">
     <div class="container flex flex-col mx-auto p-10 items-center justify-center">
       <!-- HEADER -->
       <div class="flex items-center mt-16 mb-28">
@@ -25,52 +25,58 @@
       </div>
       <!-- End of HEADER -->
 
-      <!-- INPUT -->
-      <div class="flex flex-col items-center mb-16">
-        <h1 class="mb-2">Select or Drag the audio file on the input below:</h1> 
-        <input type="file" id="audio" name="audio" class="file-input file-input-bordered file-input-secondary w-full max-w-xs" hx-post="{{ url_for('main.checkfile') }}" hx-encoding='multipart/form-data' hx-trigger="change" hx-ext="loading-states" hx-target="#verified" data-loading-target="#verifying" />
-        <div class="w-32 flex flex-row mt-4" id="verifying" data-loading="flex">
-          <p class="text-warning text-nowrap mr-2">Verifying File</p>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 80 200 50"><circle fill="#FACC15" stroke="#FACC15" stroke-width="2" r="15" cx="40" cy="100"><animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.4"></animate></circle><circle fill="#FACC15" stroke="#FACC15" stroke-width="2" r="15" cx="100" cy="100"><animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.2"></animate></circle><circle fill="#FACC15" stroke="#FACC15" stroke-width="2" r="15" cx="160" cy="100"><animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="0"></animate></circle></svg>        
-        </div>
-        <div id="verified"></div>
-
-      </div>
-      <!-- End of INPUT -->
-
-      <!-- STEM SELECTION -->
-      <div class="">
-        <div role="tablist" class="tabs tabs-bordered items-center">
-          <input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="2 stems" />
-          <div role="tabpanel" class="tab-content pt-6">
-            <div class="flex justify-center">
-              <p>Accompaniment + Vocals</p></div>
+      <form class="flex flex-col items-center" hx-post="{{ url_for('main.spleet') }}" hx-encoding="multipart/form-data" hx-indicator="#processing" >
+        <!-- INPUT -->
+        <div class="flex flex-col items-center mb-16">
+          <h1 class="mb-2">Select or Drag the audio file on the input below:</h1> 
+          <input type="file" id="audio" name="audio" class="file-input file-input-bordered file-input-secondary w-full max-w-xs" hx-post="{{ url_for('main.checkfile') }}" hx-indicator="#verifying" hx-encoding="multipart/form-data" hx-trigger="change" hx-target="#verified"/>
+          <div class="indicator w-32 flex flex-row mt-4 " id="verifying">
+            <p class="text-warning text-nowrap mr-2">Verifying File</p>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 80 200 50"><circle fill="#FACC15" stroke="#FACC15" stroke-width="2" r="15" cx="40" cy="100"><animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.4"></animate></circle><circle fill="#FACC15" stroke="#FACC15" stroke-width="2" r="15" cx="100" cy="100"><animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.2"></animate></circle><circle fill="#FACC15" stroke="#FACC15" stroke-width="2" r="15" cx="160" cy="100"><animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="0"></animate></circle></svg>        
           </div>
+          <div id="verified"></div>
 
-          <input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="4 stems" checked />
-          <div role="tabpanel" class="tab-content pt-6">
-            <div class="flex justify-center">
-              <p>Vocals + Bass + Drums + Other</p>
+        </div>
+        <!-- End of INPUT -->
+
+        <!-- STEM SELECTION -->
+        <div class="">
+          <div role="tablist" class="tabs tabs-bordered items-center">
+            <input type="radio" name="stem" value="2" role="tab" class="tab" aria-label="2 stems" checked/>
+            <div role="tabpanel" class="tab-content pt-6">
+              <div class="flex justify-center">
+                <p>Accompaniment + Vocals</p></div>
+            </div>
+
+            <input type="radio" name="stem" value="4" role="tab" class="tab" aria-label="4 stems" />
+            <div role="tabpanel" class="tab-content pt-6">
+              <div class="flex justify-center">
+                <p>Vocals + Bass + Drums + Other</p>
+              </div>
+            </div>
+
+            <input type="radio" name="stem" value="5" role="tab" class="tab" aria-label="5 stems" />
+            <div role="tabpanel" class="tab-content pt-6">
+                <div class="flex flex-col justify-center items-center">
+                  <p>Vocals + Bass + Drums + Piano</p>
+                  <p>+ Other</p>
+                </div>
             </div>
           </div>
-
-          <input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="5 stems" />
-          <div role="tabpanel" class="tab-content pt-6">
-              <div class="flex flex-col justify-center items-center">
-                <p>Vocals + Bass + Drums + Piano</p>
-                <p>+ Other</p>
-              </div>
-          </div>
         </div>
-      </div>
-      <!-- End of STEM SELECTION -->
+        <!-- End of STEM SELECTION -->
 
-      <!-- BUTTON -->
-      <div id="btnDownload" class="mt-10">
-        <button class="btn btn-wide btn-secondary" disabled data-loading-disable>Download</button>
-      </div>
-      <!-- End of BUTTON -->
+        <!-- BUTTON -->
+        <div id="btnDownload" class="mt-10">
+          <button type="submit" name="submit" class="btn btn-wide btn-secondary" disabled data-loading-disable>Download</button>
+        </div>
+        <!-- End of BUTTON -->
+      </form>
 
+      <div class="indicator w-32 flex flex-row mt-4" id="processing">
+        <p class="text-warning text-nowrap mr-2">Processing </p>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 80 200 50"><circle fill="#FACC15" stroke="#FACC15" stroke-width="2" r="15" cx="40" cy="100"><animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.4"></animate></circle><circle fill="#FACC15" stroke="#FACC15" stroke-width="2" r="15" cx="100" cy="100"><animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.2"></animate></circle><circle fill="#FACC15" stroke="#FACC15" stroke-width="2" r="15" cx="160" cy="100"><animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="0"></animate></circle></svg>        
+      </div>
 
     </div>
   </body>
