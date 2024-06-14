@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, session, jsonify
-import time
+from flask import Blueprint, render_template, request, session, send_file, Response, url_for, current_app
+from werkzeug.utils import secure_filename
+import time, os
 
 main = Blueprint('main', __name__)
 
@@ -33,5 +34,17 @@ def checkfile():
 def spleet():
     audio = request.files['audio']
     stem = request.form['stem']
+    filename = secure_filename(audio.filename)
+    path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    print(path)
+    audio.save(path)
 
-    return "Hello"
+    response = Response()
+    response.headers['HX-Redirect'] = url_for('main.download', filename=filename)
+
+    return response
+
+
+@main.route('/download/<filename>')
+def download(filename):
+   return send_file(f"static/input/{filename}", download_name=filename, as_attachment=True) 
